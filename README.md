@@ -62,10 +62,49 @@ All values are automatically cast to integers or floats when appropriate.
 
 ## Examples
 
-Batch parse all `layout-local.txt` files inside a folder (PowerShell):
+### Set player and target frames to a more visible "HUD" position for all characters on Classic
 
 ```powershell
-Get-ChildItem -Recurse "C:\Program Files (x86)\World of Warcraft\" -Filter layout-local.txt |
-    Select-Object -ExpandProperty FullName |
-    ForEach-Object { python main.py $_ }
+Get-ChildItem -Path "C:\Program Files (x86)\World of Warcraft\_classic_" -Recurse -Filter "layout-local.txt" | ForEach-Object {
+     $x, $y = 300, -220
+     python main.py $_ --set Frame=PlayerFrame X=-$x Y=$y
+     python main.py $_ --set Frame=TargetFrame X=$x Y=$y
+}
 ```
+![Portion of a screenshot showing the player and target frames precisely set opposite one another](doc/img/example1.png)
+### Frame layout overview for all Characters
+```powershell
+Get-ChildItem -Path "C:\Program Files (x86)\World of Warcraft\_classic_" -Recurse -Filter "layout-local.txt" | ForEach-Object {
+    ($_ -split '[\\/]')[-3..-2] -join '\'
+    python main.py $_
+    "`n"
+}
+```
+```txt
+Mankrik\Mebh
+Frame                | Anchor   | FrameLevel | H   | W   | X    | Y   
+---------------------|----------|------------|-----|-----|------|-----
+PlayerFrame          | CENTER   | 1          | 100 | 232 | -300 | -220
+TargetFrame          | CENTER   | 1          | 100 | 232 | 300  | -220
+WorldMapScreenAnchor | TOP      | 0          | 1   | 1   | -332 | -140
+WorldMapFrame        | CENTER   | 1          | 438 | 610 | -28  | 25  
+
+
+Mankrik\Rhodwynd
+Frame                | Anchor   | FrameLevel | H   | W   | X    | Y   
+---------------------|----------|------------|-----|-----|------|-----
+PlayerFrame          | CENTER   | 1          | 100 | 232 | -300 | -220
+WorldMapScreenAnchor | TOP      | 0          | 1   | 1   | -332 | -140
+WorldMapFrame        | CENTER   | 1          | 438 | 610 | -28  | 25  
+TargetFrame          | CENTER   | 1          | 100 | 232 | 300  | -220
+
+
+Mankrik\Rosaphel
+Frame                | Anchor   | FrameLevel | H   | W   | X    | Y   
+---------------------|----------|------------|-----|-----|------|-----
+PlayerFrame          | CENTER   | 1          | 100 | 232 | -300 | -220
+WorldMapScreenAnchor | TOP      | 0          | 1   | 1   | -332 | -140
+WorldMapFrame        | CENTER   | 1          | 438 | 610 | -28  | 25  
+TargetFrame          | CENTER   | 1          | 100 | 232 | 300  | -220
+```
+---
